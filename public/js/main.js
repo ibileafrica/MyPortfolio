@@ -160,11 +160,25 @@ async function initCampaignsSection() {
     if (result.success && Array.isArray(result.data)) {
       allCampaigns = result.data;
       renderCampaigns(allCampaigns);
+    } else if (Array.isArray(result)) {
+      allCampaigns = result;
+      renderCampaigns(allCampaigns);
     } else {
       throw new Error('Invalid campaigns payload');
     }
   } catch (error) {
-    console.warn('API error, using cached campaign showcase:', error);
+    console.warn('API error, trying static projects dataset:', error);
+    try {
+      const staticRes = await fetch('data/projects.json');
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        allCampaigns = Array.isArray(staticData) ? staticData : (staticData.data || []);
+        renderCampaigns(allCampaigns);
+        return;
+      }
+    } catch (e) {
+      console.warn('Static file fetch failed, using built-in cache:', e);
+    }
     allCampaigns = getFallbackCampaigns();
     renderCampaigns(allCampaigns);
   }

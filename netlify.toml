@@ -1,0 +1,12 @@
+[build]
+  publish = "public"
+
+[[redirects]]
+  from = "/api/projects"
+  to = "/data/projects.json"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
